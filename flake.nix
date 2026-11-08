@@ -25,10 +25,11 @@
 
       executables = [ "Hayabusa" ];
 
+      buildType = "Release";
+      selfContainedBuild = true;
+
       dotnetFlags = [
-        "-p:Configuration=Release"
         "-p:PublishAot=true"
-        "-p:PublishTrimmed=true"
       ];
 
       nativeBuildInputs = [
