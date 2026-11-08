@@ -24,6 +24,20 @@
       nugetDeps = ./deps.json;
 
       executables = [ "Hayabusa" ];
+
+      dotnetFlags = [
+        "-c"
+        "Release"
+        "-p:PublishAot=true"
+      ];
+
+      nativeBuildInputs = [
+        pkgs.clang
+      ];
+
+      buildInputs = [
+        pkgs.zlib
+      ];
     };
   in
   {
