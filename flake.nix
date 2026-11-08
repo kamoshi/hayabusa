@@ -26,19 +26,6 @@
       executables = [ "Hayabusa" ];
 
       buildType = "Release";
-      selfContainedBuild = true;
-
-      dotnetFlags = [
-        "-p:PublishAot=true"
-      ];
-
-      nativeBuildInputs = [
-        pkgs.clang
-      ];
-
-      buildInputs = [
-        pkgs.zlib
-      ];
     };
   in
   {
@@ -107,22 +94,13 @@
         };
 
         config = lib.mkIf cfg.enable {
-          users.groups.myapp = {};
-
-          users.users.myapp = {
-            isSystemUser = true;
-            group = "myapp";
-          };
-
-          systemd.services.myapp = {
+          systemd.services.hayabusa = {
             description = "Hayabusa";
             wantedBy = [ "multi-user.target" ];
             after = [ "network-online.target" ];
             wants = [ "network-online.target" ];
 
             serviceConfig = {
-              DynamicUser = true;
-
               ExecStart = "${myapp}/bin/Hayabusa";
 
               Restart = "on-failure";
@@ -131,10 +109,42 @@
               StateDirectory = "hayabusa";
               WorkingDirectory = "/var/lib/hayabusa";
 
+              # Identity and privileges
+              DynamicUser = true;
               NoNewPrivileges = true;
-              PrivateTmp = true;
+              CapabilityBoundingSet = [ "" ];
+              AmbientCapabilities = [ "" ];
+
+              # Filesystem
               ProtectSystem = "strict";
               ProtectHome = true;
+              PrivateTmp = true;
+              PrivateDevices = true;
+              ProtectKernelTunables = true;
+              ProtectKernelModules = true;
+              ProtectKernelLogs = true;
+              ProtectControlGroups = true;
+              ProtectClock = true;
+              ProtectHostname = true;
+
+              # Process isolation
+              ProtectProc = "invisible";
+              ProcSubset = "pid";
+              RestrictNamespaces = true;
+              RestrictSUIDSGID = true;
+              RestrictRealtime = true;
+              LockPersonality = true;
+
+              # Network
+              RestrictAddressFamilies = [
+                "AF_UNIX"
+                "AF_INET"
+                "AF_INET6"
+              ];
+
+              # Other
+              SystemCallArchitectures = "native";
+              UMask = "0077";
             };
 
             environment = {
