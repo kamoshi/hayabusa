@@ -106,15 +106,15 @@
             wants = [ "network-online.target" ];
 
             serviceConfig = {
-              User = "myapp";
-              Group = "myapp";
+              DynamicUser = true;
+
               ExecStart = "${myapp}/bin/Hayabusa";
 
               Restart = "on-failure";
               RestartSec = "5s";
 
-              StateDirectory = "myapp";
-              WorkingDirectory = "/var/lib/myapp";
+              StateDirectory = "hayabusa";
+              WorkingDirectory = "/var/lib/hayabusa";
 
               NoNewPrivileges = true;
               PrivateTmp = true;
