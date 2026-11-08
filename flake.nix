@@ -26,8 +26,7 @@
       executables = [ "Hayabusa" ];
 
       dotnetFlags = [
-        "-c"
-        "Release"
+        "-p:Configuration=Release"
         "-p:PublishAot=true"
       ];
 
